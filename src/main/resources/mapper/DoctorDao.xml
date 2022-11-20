@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.hospital.api.db.dao.DoctorDao">
+    <select id="searchByPage" parameterType="Map" resultType="HashMap">
+        SELECT d."id" AS "id",
+        d."name" AS "name",
+        d."sex" AS "sex",
+        d."tel" AS "tel",
+        d."school" AS "school",
+        d."degree" AS "degree",
+        d."job" AS "job",
+        md."name" AS "deptName",
+        ds."name" AS "subName",
+        d."recommended" AS "recommended",
+        d."status" AS "status"
+        FROM HOSPITAL.DOCTOR d
+        JOIN HOSPITAL.MEDICAL_DEPT_SUB_AND_DOCTOR sd ON sd."doctor_id" = d."id"
+        JOIN HOSPITAL.MEDICAL_DEPT_SUB ds ON sd."dept_sub_id" = ds."id"
+        JOIN HOSPITAL.MEDICAL_DEPT md ON ds."dept_id" = md."id"
+        WHERE 1=1
+        <if test="name!=null">
+            AND d."name" LIKE '%${name}%'
+        </if>
+        <if test="deptId!=null">
+            AND md."id" = ${deptId}
+        </if>
+        <if test="degree!=null">
+            AND d."degree" = #{degree}
+        </if>
+        <if test="job!=null">
+            AND d."job" = #{job}
+        </if>
+        <if test="recommended!=null">
+            AND d."recommended" = ${recommended}
+        </if>
+        AND d."status" = ${status}
+        <if test="order!=null">
+            ORDER BY md."id" ${order}
+        </if>
+        LIMIT ${length} OFFSET #{start}
+    </select>
+
+    <select id="searchCount" parameterType="Map" resultType="long">
+        SELECT COUNT(*)
+        FROM HOSPITAL.DOCTOR d
+        JOIN HOSPITAL.MEDICAL_DEPT_SUB_AND_DOCTOR sd ON sd."doctor_id" = d."id"
+        JOIN HOSPITAL.MEDICAL_DEPT_SUB ds ON sd."dept_sub_id" = ds."id"
+        JOIN HOSPITAL.MEDICAL_DEPT md ON ds."dept_id" = md."id"
+        WHERE 1=1
+        <if test="name!=null">
+            AND d."name" LIKE '%${name}%'
+        </if>
+        <if test="deptId!=null">
+            AND md."id" = ${deptId}
+        </if>
+        <if test="degree!=null">
+            AND d."degree" = #{degree}
+        </if>
+        <if test="job!=null">
+            AND d."job" = #{job}
+        </if>
+        <if test="recommended!=null">
+            AND d."recommended" = ${recommended}
+        </if>
+        AND d."status" = ${status}
+    </select>
+
+</mapper>

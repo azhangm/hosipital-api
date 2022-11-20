@@ -1,0 +1,107 @@
+server:
+#  非阻塞 可以处理更多并发请求
+  jetty:
+    threads:
+#      线程池接收 http 请求
+      acceptors: 4
+#      处理 http 协议 数据包
+      selectors: 8
+#      worker 线程池 负责调用web 方法
+      min: 8
+      max: 200
+  port: 8092
+  servlet:
+    context-path: /hospital-api
+
+spring:
+  datasource:
+    driver-class-name: org.apache.phoenix.queryserver.client.Driver
+    url: jdbc:phoenix:thin:url=http://localhost:8765;serialization=PROTOBUF
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      test-on-borrow: true
+      test-while-idle: true
+      max-active: 8
+      min-idle: 4
+      validation-query: SELECT 1
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
+    password: abc123456
+    jedis:
+      pool:
+        max-active: 1000
+        max-wait: -1ms
+        max-idle: 16
+        min-idle: 8
+
+  quartz:
+    job-store-type: memory
+
+mybatis:
+  mapper-locations: classpath*:mapper/*.xml
+  type-aliases-package: com.example.hospital.api.db.pojo
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    root: info
+    com.example.hospital.api.db.dao: warn
+  pattern:
+    console: "%d{yyyy/MM/dd HH:mm:ss}  %-5level  %msg%n"
+
+sa-token:
+  # HTTP 请求中 token 的名称
+  token-name: token
+  # token 的有效期 单位 s  默认 30天 -1  永不过期
+  timeout: 2592000
+  # token 临时有效期  （指定规定时间内无操作 就认为 token 过期） 单位秒
+  activity-timeout: -1
+  # 允许 同一个账号并发登录 ？
+  allow-concurrent-login: true
+  # 是 合法 token 就行
+  is-share: false
+  token-style: uuid
+  isReadCookie: false
+
+
+wechat:
+  app-id: wx865e4cf559d81fe5
+  app-secret: wx865e4cf559d81fe5
+  pay:
+    v3:
+      patient-wx-api:
+        app-id: wx4cb8e9621950da45
+        app-v3-secret: 6c6085b7a939450d833d8bb3081d4628
+        mch-id: 1526972031
+        domain: http://内网穿透的外网IP地址和端口/hospital-wx-api
+        cert-path: apiclient_cert.p12
+
+tencent:
+  cloud:
+    appId: 123123
+    secretId: ASDASD
+    secretKey: ASDASD
+    face:
+      groupName: hospital
+      region: ap-beijing
+  trtc:
+    appId: 1321321
+    secretKey: dasd
+    expire: 86400
+
+minio:
+  endpoint: http://localhost:9000
+  access-key: root
+  secret-key: abc123456
+
