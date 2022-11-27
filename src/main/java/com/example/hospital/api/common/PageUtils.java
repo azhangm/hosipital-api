@@ -36,6 +36,8 @@ public class PageUtils implements Serializable {
         this.totalCount = totalCount;
         this.pageSize = pageSize;
         this.pageIndex = pageIndex;
+//        	ceil(double a)
+//返回最小的（最接近负无穷大） double值，该值大于或等于该参数，并等于某个整数。
         this.totalPage = (int) Math.ceil((double) totalCount / pageSize);
     }
 
