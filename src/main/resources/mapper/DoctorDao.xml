@@ -67,4 +67,19 @@
         AND d."status" = ${status}
     </select>
 
+    <select id="searchContent" parameterType="int" resultType="HashMap">
+        SELECT "photo",
+               "pid",
+               "birthday",
+               "uuid",
+               "hiredate",
+               "email",
+               "remark",
+               "tag",
+               "address",
+               "description"
+        FROM HOSPITAL.DOCTOR
+        WHERE "id" = ${id}
+    </select>
+
 </mapper>

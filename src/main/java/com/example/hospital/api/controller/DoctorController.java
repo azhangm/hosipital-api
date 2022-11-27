@@ -6,6 +6,7 @@ import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.bean.BeanUtil;
 import com.example.hospital.api.common.PageUtils;
 import com.example.hospital.api.common.R;
+import com.example.hospital.api.controller.form.SearchContentForm;
 import com.example.hospital.api.controller.form.SearchDoctorByPageForm;
 import com.example.hospital.api.service.DoctorService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,4 +45,12 @@ public class DoctorController {
         PageUtils pageUtils = doctorService.serviceByPage(param);
         return R.ok().put("result",pageUtils);
     }
+
+    @PostMapping("/searchContent")
+    @SaCheckLogin
+    @SaCheckPermission(value = {"ROOT","DOCTOR:SELECT"},mode = SaMode.OR)
+    public R searchContent(@RequestBody @Valid SearchContentForm form) {
+        return doctorService.searchContent(form.getId());
+    }
+
 }
