@@ -2,11 +2,13 @@ package com.example.hospital.api.exception;
 
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class HospitalException extends RuntimeException {
     private String msg;
-    private int code = 500;
+    private int code ;
 
     public HospitalException(Exception e) {
         super(e);

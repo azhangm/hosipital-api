@@ -3,6 +3,10 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.hospital.api.db.dao.DoctorDao">
+    <update id="updatePhoto">
+        UPSERT INTO HOSPITAL.DOCTOR("id","photo")
+        VALUES (${id},#{photo})
+    </update>
     <select id="searchByPage" parameterType="Map" resultType="HashMap">
         SELECT d."id" AS "id",
         d."name" AS "name",
@@ -80,6 +84,24 @@
                "description"
         FROM HOSPITAL.DOCTOR
         WHERE "id" = ${id}
+    </select>
+    <insert id="insert" parameterType="com.example.hospital.api.db.pojo.DoctorEntity">
+        UPSERT INTO HOSPITAL.DOCTOR(
+        "id", "name", "pid", "uuid", "sex", "birthday",
+        "school", "degree", "tel", "address", "email", "job", "remark",
+        "description", "hiredate", "tag","recommended","status", "create_time"
+    )
+    VALUES (
+        NEXT VALUE FOR HOSPITAL.DOCTOR_SEQUENCE, #{name}, #{pid}, #{uuid}, #{sex}, TO_DATE('${birthday}'),
+        #{school}, #{degree}, #{tel}, #{address}, #{email}, #{job}, #{remark},
+        #{description}, #{hiredate}, #{tag}, ${recommended}, ${status}, NOW()
+        )
+    </insert>
+
+    <select id="searchIdByUuid" parameterType="String" resultType="Integer">
+        SELECT "id"
+        FROM HOSPITAL.DOCTOR
+        WHERE "uuid" = #{uuid}
     </select>
 
 </mapper>

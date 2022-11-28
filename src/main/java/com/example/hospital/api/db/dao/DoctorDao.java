@@ -11,6 +11,12 @@ public interface DoctorDao {
     long searchCount(Map param);
 
     Map searchContent(Integer id);
+
+    void updatePhoto(Map param);
+
+    void insert(Map param);
+
+    int searchIdByUuid(String uuid);
 }
 
 

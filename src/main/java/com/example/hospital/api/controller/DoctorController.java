@@ -9,10 +9,12 @@ import com.example.hospital.api.common.R;
 import com.example.hospital.api.controller.form.SearchContentForm;
 import com.example.hospital.api.controller.form.SearchDoctorByPageForm;
 import com.example.hospital.api.service.DoctorService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -51,6 +53,14 @@ public class DoctorController {
     @SaCheckPermission(value = {"ROOT","DOCTOR:SELECT"},mode = SaMode.OR)
     public R searchContent(@RequestBody @Valid SearchContentForm form) {
         return doctorService.searchContent(form.getId());
+    }
+
+    @PostMapping("/updatePhoto")
+    @SaCheckLogin
+    @SaCheckPermission(value = {"ROOT","DOCTOR:UPDATE"},mode = SaMode.OR)
+    public R updatePhoto(@Param("file")MultipartFile file , @Param("doctorId") Integer doctorId) {
+        doctorService.updatePhoto(file,doctorId);
+        return R.ok();
     }
 
 }
