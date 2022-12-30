@@ -1,11 +1,15 @@
 package com.example.hospital.api.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
 import com.example.hospital.api.common.PageUtils;
 import com.example.hospital.api.common.R;
 import com.example.hospital.api.db.dao.DoctorDao;
+import com.example.hospital.api.db.dao.MedicalDeptSubAndDoctorDao;
+import com.example.hospital.api.db.pojo.DoctorEntity;
+import com.example.hospital.api.db.pojo.MedicalDeptSubAndDoctorEntity;
 import com.example.hospital.api.exception.HospitalException;
 import com.example.hospital.api.service.DoctorService;
 import io.minio.MinioClient;
@@ -41,6 +45,9 @@ public class DoctorServiceImpl implements DoctorService {
     @Resource
     private DoctorDao doctorDao;
 
+//    插入交叉表维持关系
+    @Resource
+    private MedicalDeptSubAndDoctorDao medicalDeptSubAndDoctorDao;
     @Override
     public PageUtils serviceByPage( Map param) {
         ArrayList<HashMap> list;
@@ -98,7 +105,18 @@ public class DoctorServiceImpl implements DoctorService {
             log.error("保存医生照片失败",e);
             throw new HospitalException("保存医生照片失败");
         }
+        }
 
 
-    }
+        @Override
+        public void insert(Map param) {
+            doctorDao.insert(param);
+            Object uuid = param.get("uuid");
+            Integer doctorId = doctorDao.searchIdByUuid((String) uuid);
+            Integer subId = MapUtil.getInt(param, "subId");
+            MedicalDeptSubAndDoctorEntity medicalDeptSubAndDoctorEntity = new MedicalDeptSubAndDoctorEntity();
+            medicalDeptSubAndDoctorEntity.setDoctorId(doctorId);
+            medicalDeptSubAndDoctorEntity.setDeptSubId(subId);
+            medicalDeptSubAndDoctorDao.insert(medicalDeptSubAndDoctorEntity);
+        }
 }

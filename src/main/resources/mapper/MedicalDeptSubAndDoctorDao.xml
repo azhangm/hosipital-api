@@ -3,5 +3,14 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.hospital.api.db.dao.MedicalDeptSubAndDoctorDao">
-    
+
+    <insert id="insert">
+        upsert into HOSPITAL.MEDICAL_DEPT_SUB_AND_DOCTOR
+        ("id","dept_sub_id","doctor_id")
+        values (
+        NEXT VALUE FOR HOSPITAL.MEDICAL_DEPT_SUB_AND_DOCTOR_SEQUENCE,
+        ${deptSubId},
+        ${doctorId}
+        )
+    </insert>
 </mapper>

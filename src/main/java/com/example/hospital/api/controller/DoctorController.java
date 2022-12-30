@@ -4,8 +4,12 @@ import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONUtil;
 import com.example.hospital.api.common.PageUtils;
 import com.example.hospital.api.common.R;
+import com.example.hospital.api.controller.form.InsertDoctorForm;
 import com.example.hospital.api.controller.form.SearchContentForm;
 import com.example.hospital.api.controller.form.SearchDoctorByPageForm;
 import com.example.hospital.api.service.DoctorService;
@@ -60,6 +64,21 @@ public class DoctorController {
     @SaCheckPermission(value = {"ROOT","DOCTOR:UPDATE"},mode = SaMode.OR)
     public R updatePhoto(@Param("file")MultipartFile file , @Param("doctorId") Integer doctorId) {
         doctorService.updatePhoto(file,doctorId);
+        return R.ok();
+    }
+
+    @PostMapping("/insert")
+    @SaCheckLogin
+    @SaCheckPermission(value = {"ROOT","DOCTOR:INSERT"},mode = SaMode.OR)
+    public R insert(@RequestBody @Valid InsertDoctorForm from) {
+        Map param = BeanUtil.beanToMap(from);
+        for (Object o : param.entrySet()) {
+            System.out.println(param.get(o));
+        }
+        String s = JSONUtil.parseArray(from.getTag()).toString();
+        param.replace("tag",s);
+        param.put("uuid", IdUtil.simpleUUID().toUpperCase());
+        doctorService.insert(param);
         return R.ok();
     }
 

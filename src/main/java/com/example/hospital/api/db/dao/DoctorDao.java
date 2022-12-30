@@ -1,5 +1,7 @@
 package com.example.hospital.api.db.dao;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,9 +16,10 @@ public interface DoctorDao {
 
     void updatePhoto(Map param);
 
+    @Transactional
     void insert(Map param);
 
-    int searchIdByUuid(String uuid);
+    Integer searchIdByUuid(String uuid);
 }
 
 
