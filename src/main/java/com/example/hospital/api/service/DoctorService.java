@@ -15,4 +15,9 @@ public interface DoctorService {
     void updatePhoto(MultipartFile file, Integer id);
 
     void insert(Map param);
+
+    Map searchById(int id);
+
+    @Transactional
+    void update(Map param);
 }

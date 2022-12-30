@@ -103,5 +103,44 @@
         FROM HOSPITAL.DOCTOR
         WHERE "uuid" = #{uuid}
     </select>
+    <select id="searchById" resultType="java.util.Map" parameterType="int">
+        SELECT d."id" AS "id",
+               d."name" AS "name",
+               d."pid" AS "pid",
+               d."uuid" AS"uuid",
+               d."sex" AS "sex",
+               d."birthday" AS "birthday",
+               d."school" AS "school",
+               d."degree" AS "degree",
+               d."tel" AS "tel",
+               d."address" AS "address",
+               d."email" AS "email",
+               d."job" AS "job",
+               d."remark" AS "remark",
+               d."description" AS "description",
+               d."hiredate" AS "hiredate",
+               d."tag" AS "tag",
+               d."recommended" AS "recommended",
+               d."status" AS "status",
+               md."name" AS "deptName",
+               sd."dept_sub_id" AS "deptSubId"
+        FROM HOSPITAL.DOCTOR d
+                 JOIN HOSPITAL.MEDICAL_DEPT_SUB_AND_DOCTOR sd ON sd."doctor_id" = d."id"
+                 JOIN HOSPITAL.MEDICAL_DEPT_SUB s ON sd."dept_sub_id" = s."id"
+                 JOIN HOSPITAL.MEDICAL_DEPT md ON s."dept_id" = md."id"
+        WHERE d."id" = ${id}
+    </select>
 
+    <update id="update" parameterType="Map">
+        UPSERT INTO HOSPITAL.DOCTOR(
+        "id", "name", "pid", "sex", "birthday",
+        "school", "degree", "tel", "address", "email", "job", "remark",
+        "description", "hiredate", "tag","recommended","status"
+    )
+    VALUES (
+        ${id}, #{name}, #{pid}, #{sex}, TO_DATE('${birthday}'),
+        #{school}, #{degree}, #{tel}, #{address}, #{email}, #{job}, #{remark},
+        #{description}, #{hiredate}, #{tag}, ${recommended}, ${status}
+        )
+    </update>
 </mapper>

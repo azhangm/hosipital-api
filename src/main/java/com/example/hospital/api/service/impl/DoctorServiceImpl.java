@@ -1,6 +1,5 @@
 package com.example.hospital.api.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
@@ -8,7 +7,6 @@ import com.example.hospital.api.common.PageUtils;
 import com.example.hospital.api.common.R;
 import com.example.hospital.api.db.dao.DoctorDao;
 import com.example.hospital.api.db.dao.MedicalDeptSubAndDoctorDao;
-import com.example.hospital.api.db.pojo.DoctorEntity;
 import com.example.hospital.api.db.pojo.MedicalDeptSubAndDoctorEntity;
 import com.example.hospital.api.exception.HospitalException;
 import com.example.hospital.api.service.DoctorService;
@@ -119,4 +117,22 @@ public class DoctorServiceImpl implements DoctorService {
             medicalDeptSubAndDoctorEntity.setDeptSubId(subId);
             medicalDeptSubAndDoctorDao.insert(medicalDeptSubAndDoctorEntity);
         }
+
+
+    @Override
+    public Map searchById(int id) {
+        Map map = doctorDao.searchById(id);
+        String tag = MapUtil.getStr(map, "tag");
+        JSONArray array = JSONUtil.parseArray(tag);
+        map.replace("tag", array);
+        return map;
+    }
+
+
+    @Override
+    @Transactional
+    public void update(Map param) {
+        doctorDao.update(param);
+        medicalDeptSubAndDoctorDao.updateDoctorSubDept(param);
+    }
 }

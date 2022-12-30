@@ -20,6 +20,10 @@ public interface DoctorDao {
     void insert(Map param);
 
     Integer searchIdByUuid(String uuid);
+
+    Map searchById(Integer id);
+
+    void update(Map param);
 }
 
 

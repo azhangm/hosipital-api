@@ -9,9 +9,7 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
 import com.example.hospital.api.common.PageUtils;
 import com.example.hospital.api.common.R;
-import com.example.hospital.api.controller.form.InsertDoctorForm;
-import com.example.hospital.api.controller.form.SearchContentForm;
-import com.example.hospital.api.controller.form.SearchDoctorByPageForm;
+import com.example.hospital.api.controller.form.*;
 import com.example.hospital.api.service.DoctorService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -82,4 +81,22 @@ public class DoctorController {
         return R.ok();
     }
 
+    @PostMapping("/searchById")
+    @SaCheckLogin
+    @SaCheckPermission(value = {"ROOT", "DOCTOR:SELECT"}, mode = SaMode.OR)
+    public R searchById(@RequestBody @Valid SearchDoctorByIdForm form) {
+        Map map = (HashMap) doctorService.searchById(form.getId());
+        return R.ok(map);
+    }
+
+    @PostMapping("/update")
+    @SaCheckLogin
+    @SaCheckPermission(value = {"ROOT", "DOCTOR:UPDATE"}, mode = SaMode.OR)
+    public R update(@RequestBody @Valid UpdateDoctorForm form) {
+        Map param = BeanUtil.beanToMap(form);
+        String json = JSONUtil.parseArray(form.getTag()).toString();
+        param.replace("tag", json);
+        doctorService.update(param);
+        return R.ok();
+    }
 }
