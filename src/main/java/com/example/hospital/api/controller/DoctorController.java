@@ -99,4 +99,13 @@ public class DoctorController {
         doctorService.update(param);
         return R.ok();
     }
+
+
+    @PostMapping("/delete")
+    @SaCheckLogin
+    @SaCheckPermission(value = {"ROOT","DOCTOR:DELETE"},mode = SaMode.OR)
+    public R delete(@RequestBody @Valid  DeleteDoctorForm form) {
+        doctorService.deleteByIds(form.getIds());
+        return R.ok();
+    }
 }

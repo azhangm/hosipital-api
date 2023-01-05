@@ -20,4 +20,7 @@ public interface DoctorService {
 
     @Transactional
     void update(Map param);
+
+    @Transactional
+    void deleteByIds(Integer[] ids);
 }

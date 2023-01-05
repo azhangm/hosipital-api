@@ -130,9 +130,13 @@ public class DoctorServiceImpl implements DoctorService {
 
 
     @Override
-    @Transactional
     public void update(Map param) {
         doctorDao.update(param);
         medicalDeptSubAndDoctorDao.updateDoctorSubDept(param);
+    }
+
+    @Override
+    public void deleteByIds(Integer[] ids) {
+        doctorDao.deleteByIds(ids);
     }
 }

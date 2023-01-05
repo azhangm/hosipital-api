@@ -24,6 +24,8 @@ public interface DoctorDao {
     Map searchById(Integer id);
 
     void update(Map param);
+
+    void deleteByIds(Integer[] ids);
 }
 
 

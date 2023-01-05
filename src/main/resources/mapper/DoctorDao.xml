@@ -7,6 +7,15 @@
         UPSERT INTO HOSPITAL.DOCTOR("id","photo")
         VALUES (${id},#{photo})
     </update>
+    <update id="deleteByIds">
+        UPSERT INTO HOSPITAL.DOCTOR("id","status")
+        SELECT "id",4
+        from HOSPITAL.DOCTOR
+        WHERE "id" in
+        <foreach collection="array" open="(" item="item" separator="," close=")">
+            ${item}
+        </foreach>
+    </update>
     <select id="searchByPage" parameterType="Map" resultType="HashMap">
         SELECT d."id" AS "id",
         d."name" AS "name",
