@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Map;
 
 public interface DoctorService {
-    PageUtils serviceByPage(Map param);
+    PageUtils serviceByPage(Map<String,Object> param);
 
     R searchContent(Integer id);
 
@@ -16,7 +16,7 @@ public interface DoctorService {
 
     void insert(Map param);
 
-    Map searchById(int id);
+    Map<String,Object> searchById(int id);
 
     @Transactional
     void update(Map param);

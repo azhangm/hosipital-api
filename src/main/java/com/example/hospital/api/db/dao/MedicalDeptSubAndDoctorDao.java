@@ -10,7 +10,7 @@ public interface MedicalDeptSubAndDoctorDao {
     @Transactional
     void insert(MedicalDeptSubAndDoctorEntity entity);
 
-    void updateDoctorSubDept(Map param);
+    void updateDoctorSubDept(Map<String,Object> param);
 }
 
 

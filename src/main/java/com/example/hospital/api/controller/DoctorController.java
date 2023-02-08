@@ -40,7 +40,7 @@ public class DoctorController {
     @SaCheckLogin
     @SaCheckPermission(value = {"ROOT","DOCTOR:SELECT"},mode = SaMode.OR)
     public R searchByPage(@RequestBody @Valid SearchDoctorByPageForm form) {
-        Map param = BeanUtil.beanToMap(form);
+        Map<String,Object> param = BeanUtil.beanToMap(form);
 //        当前页数
         int page = form.getPage();
         int length = form.getLength();
@@ -70,7 +70,7 @@ public class DoctorController {
     @SaCheckLogin
     @SaCheckPermission(value = {"ROOT","DOCTOR:INSERT"},mode = SaMode.OR)
     public R insert(@RequestBody @Valid InsertDoctorForm from) {
-        Map param = BeanUtil.beanToMap(from);
+        Map<String,Object> param = BeanUtil.beanToMap(from);
         for (Object o : param.entrySet()) {
             System.out.println(param.get(o));
         }
@@ -85,7 +85,7 @@ public class DoctorController {
     @SaCheckLogin
     @SaCheckPermission(value = {"ROOT", "DOCTOR:SELECT"}, mode = SaMode.OR)
     public R searchById(@RequestBody @Valid SearchDoctorByIdForm form) {
-        Map map = (HashMap) doctorService.searchById(form.getId());
+        Map<String ,Object> map =  doctorService.searchById(form.getId());
         return R.ok(map);
     }
 
@@ -93,7 +93,7 @@ public class DoctorController {
     @SaCheckLogin
     @SaCheckPermission(value = {"ROOT", "DOCTOR:UPDATE"}, mode = SaMode.OR)
     public R update(@RequestBody @Valid UpdateDoctorForm form) {
-        Map param = BeanUtil.beanToMap(form);
+        Map<String,Object> param = BeanUtil.beanToMap(form);
         String json = JSONUtil.parseArray(form.getTag()).toString();
         param.replace("tag", json);
         doctorService.update(param);
