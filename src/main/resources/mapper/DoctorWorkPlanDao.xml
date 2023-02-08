@@ -3,5 +3,26 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.hospital.api.db.dao.DoctorWorkPlanDao">
-    
+
+    <select id="searchWorkPlanInRange" resultType="java.util.Map">
+        SELECT md."name" AS "deptName",
+               d."name" AS "doctorName",
+               dsi."id" AS "deptSubId",
+               dsi."name" AS "deptSubName",
+               wp."id"  AS "workPlanId",
+               wp."date" AS "date"
+        FROM HOSPITAL.DOCTOR_WORK_PLAN wp
+        INNER JOIN HOSPITAL.DOCTOR d on wp."doctor_id" = d."id"
+        INNER JOIN HOSPITAL.MEDICAL_DEPT_SUB dsi on wp."dept_sub_id" = dsi."id"
+        INNER JOIN HOSPITAL.MEDICAL_DEPT md on dsi."dept_id" = md."id"
+
+         WHERE wp."date" BETWEEN TO_DATE('${startDate}') AND TO_DATE('${endDate}')
+        <if test="deptId != null">
+            AND dsi."dept_id" = ${deptId}
+        </if>
+        <if test="doctorName != null">
+            AND  d."name" LIKE  '%${doctorName}%'
+        </if>
+        ORDER BY dsi."id", wp."date"
+    </select>
 </mapper>
