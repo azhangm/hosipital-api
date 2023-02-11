@@ -25,6 +25,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -138,5 +139,10 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public void deleteByIds(Integer[] ids) {
         doctorDao.deleteByIds(ids);
+    }
+
+    @Override
+    public List<Map<String, Object>> searchByDeptSubId(int deptSubId) {
+        return doctorDao.searchByDeptSubId(deptSubId);
     }
 }

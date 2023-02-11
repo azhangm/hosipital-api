@@ -5,6 +5,7 @@ import com.example.hospital.api.common.R;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 public interface DoctorService {
@@ -23,4 +24,6 @@ public interface DoctorService {
 
     @Transactional
     void deleteByIds(Integer[] ids);
+
+    List<Map<String,Object>> searchByDeptSubId(int deptSubId);
 }

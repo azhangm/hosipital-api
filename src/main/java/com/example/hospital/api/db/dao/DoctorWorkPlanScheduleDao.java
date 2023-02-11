@@ -1,5 +1,7 @@
 package com.example.hospital.api.db.dao;
 
+import com.example.hospital.api.db.pojo.DoctorWorkPlanScheduleEntity;
+
 /**
  * 医生工作计划安排
  *
@@ -8,7 +10,7 @@ package com.example.hospital.api.db.dao;
  */
 public interface DoctorWorkPlanScheduleDao {
 
-   
+    void insert(DoctorWorkPlanScheduleEntity entity);
 }
 
 

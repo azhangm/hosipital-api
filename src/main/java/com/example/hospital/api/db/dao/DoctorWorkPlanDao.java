@@ -1,6 +1,9 @@
 package com.example.hospital.api.db.dao;
 
 
+import com.example.hospital.api.db.pojo.DoctorWorkPlanEntity;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +17,11 @@ import java.util.Map;
 public interface DoctorWorkPlanDao {
 
      ArrayList<HashMap> searchWorkPlanInRange(Map param);
+
+     Integer searchId(Map<String,Object> param);
+
+     @Transactional
+     void insert(DoctorWorkPlanEntity entity);
 }
 
 

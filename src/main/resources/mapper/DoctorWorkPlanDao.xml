@@ -25,4 +25,25 @@
         </if>
         ORDER BY dsi."id", wp."date"
     </select>
+
+
+    <select id="searchId" parameterType="Map" resultType="Integer">
+        SELECT "id"
+        FROM HOSPITAL.DOCTOR_WORK_PLAN
+        WHERE "doctor_id" = ${doctorId}
+          AND "dept_sub_id" = ${deptSubId}
+          AND "date" = TO_DATE('${date}')
+        LIMIT 1 OFFSET 0
+    </select>
+
+    <insert id="insert" parameterType="com.example.hospital.api.db.pojo.DoctorWorkPlanEntity">
+        UPSERT INTO HOSPITAL.DOCTOR_WORK_PLAN(
+        "id", "doctor_id", "dept_sub_id", "date", "maximum", "num"
+    )
+    VALUES(
+        NEXT VALUE FOR HOSPITAL.DOCTOR_WORK_PLAN_SEQUENCE, ${doctorId}, ${deptSubId},
+        TO_DATE('${date}'), ${maximum}, 0
+        )
+    </insert>
+
 </mapper>

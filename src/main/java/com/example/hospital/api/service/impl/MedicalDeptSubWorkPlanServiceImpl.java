@@ -1,10 +1,14 @@
 package com.example.hospital.api.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
 import com.example.hospital.api.db.dao.DoctorWorkPlanDao;
+import com.example.hospital.api.db.pojo.DoctorWorkPlanEntity;
+import com.example.hospital.api.db.pojo.DoctorWorkPlanScheduleEntity;
+import com.example.hospital.api.service.DoctorWorkPlanScheduleService;
 import com.example.hospital.api.service.MedicalDeptSubWorkPlanService;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +27,8 @@ public class MedicalDeptSubWorkPlanServiceImpl implements MedicalDeptSubWorkPlan
     @Resource
     private DoctorWorkPlanDao dao;
 
+    @Resource
+    private DoctorWorkPlanScheduleService doctorWorkPlanScheduleService;
 
     @Override
     public JSONArray searchWorkPlanInRange(Map param, ArrayList dateList) {
@@ -156,5 +162,37 @@ public class MedicalDeptSubWorkPlanServiceImpl implements MedicalDeptSubWorkPlan
             one.replace("plan", temp);
         });
         return JSONUtil.parseArray(values);
+    }
+
+
+    @Override
+    public String insert(Map<String,Object> param) {
+        //查询当天该医生是否存在出诊记录
+        Integer id = dao.searchId(param);
+        if (id != null) {
+            return "已经存在出诊计划，不能重复添加";
+        }
+
+        DoctorWorkPlanEntity entity_1 = BeanUtil.toBean(param, DoctorWorkPlanEntity.class);
+        int totalMaximum=MapUtil.getInt(param,"totalMaximum");
+        entity_1.setMaximum(totalMaximum);
+        //保存出诊计划
+        dao.insert(entity_1);
+
+        //查询出诊计划主键值
+        id = dao.searchId(param);
+
+        Integer[] slots = (Integer[]) param.get("slots");
+        ArrayList<DoctorWorkPlanScheduleEntity> list = new ArrayList<>();
+        int slotMaximum=MapUtil.getInt(param,"slotMaximum");
+        for (Integer slot : slots) {
+            DoctorWorkPlanScheduleEntity entity_2 = BeanUtil.toBean(param, DoctorWorkPlanScheduleEntity.class);
+            entity_2.setWorkPlanId(id);
+            entity_2.setSlot(slot);
+            entity_2.setMaximum(slotMaximum);
+            list.add(entity_2);
+        }
+        doctorWorkPlanScheduleService.insert(list);
+        return "";
     }
 }

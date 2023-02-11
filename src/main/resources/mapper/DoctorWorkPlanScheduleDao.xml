@@ -3,5 +3,14 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.hospital.api.db.dao.DoctorWorkPlanScheduleDao">
-    
+
+    <insert id="insert" parameterType="com.example.hospital.api.db.pojo.DoctorWorkPlanScheduleEntity">
+        UPSERT INTO HOSPITAL.DOCTOR_WORK_PLAN_SCHEDULE(
+        "id", "work_plan_id", "slot", "maximum", "num"
+    )
+    VALUES(
+        NEXT VALUE FOR HOSPITAL.DOCTOR_WORK_PLAN_SCHEDULE_SEQUENCE, ${workPlanId},
+        ${slot}, ${maximum}, 0
+        )
+    </insert>
 </mapper>
