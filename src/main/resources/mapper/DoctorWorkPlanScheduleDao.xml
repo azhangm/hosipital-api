@@ -13,4 +13,16 @@
         ${slot}, ${maximum}, 0
         )
     </insert>
+
+    <select id="searchNewSchedule" parameterType="int" resultType="HashMap">
+        SELECT s."id"                          AS "id",
+               s."slot"                        AS "slot",
+               s."maximum"                     AS "maximum",
+               s."num"                         AS "num",
+               TO_CHAR(p."date", 'yyyy-MM-dd') AS "date"
+        FROM HOSPITAL.DOCTOR_WORK_PLAN p
+                 JOIN HOSPITAL.DOCTOR_WORK_PLAN_SCHEDULE s ON p."id" = s."work_plan_id"
+        WHERE s."work_plan_id" = ${workPlanId}
+    </select>
+
 </mapper>
