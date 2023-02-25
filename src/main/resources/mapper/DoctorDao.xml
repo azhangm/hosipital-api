@@ -141,7 +141,7 @@
     </select>
     <select id="searchByDeptSubId" resultType="java.util.Map">
         SELECT d."id" AS "id",
-               d."name" AS "name",
+               d."name" AS "name"
                FROM HOSPITAL.DOCTOR d
         INNER JOIN HOSPITAL.MEDICAL_DEPT_SUB_AND_DOCTOR sd ON sd."doctor_id" = d."id"
         WHERE sd."dept_sub_id" = ${deptSubId}

@@ -22,6 +22,7 @@ import java.util.*;
  * @date 2023/02/06
  */
 @Service
+@SuppressWarnings("all")
 public class MedicalDeptSubWorkPlanServiceImpl implements MedicalDeptSubWorkPlanService {
 
     @Resource
@@ -193,6 +194,6 @@ public class MedicalDeptSubWorkPlanServiceImpl implements MedicalDeptSubWorkPlan
             list.add(entity_2);
         }
         doctorWorkPlanScheduleService.insert(list);
-        return "";
+        return "添加成功！";
     }
 }

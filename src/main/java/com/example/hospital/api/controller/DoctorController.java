@@ -20,7 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -107,5 +109,13 @@ public class DoctorController {
     public R delete(@RequestBody @Valid  DeleteDoctorForm form) {
         doctorService.deleteByIds(form.getIds());
         return R.ok();
+    }
+
+
+    @PostMapping("/searchByDeptSubId")
+    @SaCheckLogin
+    public R searchByDeptSubId(@RequestBody @Valid SearchDoctorByDeptSubIdForm form) {
+        List<Map<String,Object>> list = doctorService.searchByDeptSubId(form.getDeptSubId());
+        return R.ok().put("result", list);
     }
 }

@@ -18,6 +18,9 @@ public interface DoctorWorkPlanDao {
 
      ArrayList<HashMap> searchWorkPlanInRange(Map param);
 
+//     ${doctorId}
+//= ${deptSubId}
+//     to_date 查询工作计划
      Integer searchId(Map<String,Object> param);
 
      @Transactional
