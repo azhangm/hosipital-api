@@ -6,6 +6,7 @@ import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.bean.BeanUtil;
 import com.example.hospital.api.common.R;
 import com.example.hospital.api.controller.form.SearchDeptSubScheduleForm;
+import com.example.hospital.api.controller.form.SearchScheduleByWorkPlanIdForm;
 import com.example.hospital.api.service.DoctorWorkPlanScheduleService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -32,4 +34,13 @@ public class DoctorWorkPlanScheduleController {
         ArrayList list = doctorWorkPlanScheduleService.searchDeptSubSchedule(param);
         return R.ok().put("result", list);
     }
-}
+
+    @PostMapping("/searchByWorkPlanId")
+    @SaCheckLogin
+    @SaCheckPermission(value = {"ROOT", "SCHEDULE:SELECT"}, mode = SaMode.OR)
+    public R searchByWorkPlanId(@RequestBody @Valid SearchScheduleByWorkPlanIdForm form) {
+        HashMap map = doctorWorkPlanScheduleService.searchByWorkPlanId(form.getWorkPlanId());
+        return R.ok().put("result", map);
+    }
+    }
+

@@ -60,6 +60,34 @@ public class DoctorWorkPlanScheduleServiceImpl implements DoctorWorkPlanSchedule
         addScheduleCache(list);
     }
 
+    @Override
+    public HashMap searchByWorkPlanId(int workPlanId) {
+        ArrayList<HashMap> list = doctorWorkPlanScheduleDao.searchByWorkPlanId(workPlanId);
+
+        HashMap result = new HashMap();
+        ArrayList temp = new ArrayList();
+        for (int i = 0; i < list.size(); i++) {
+            HashMap map = list.get(i);
+            int scheduleId = MapUtil.getInt(map, "scheduleId");
+            int doctorId = MapUtil.getInt(map, "doctorId");
+            int maximum = MapUtil.getInt(map, "maximum");
+            int num = MapUtil.getInt(map, "num");
+            int slot = MapUtil.getInt(map, "slot");
+
+            if (i == 0) {
+                result.put("doctorId", doctorId);
+                result.put("maximum", maximum);
+            }
+            temp.add(new HashMap<>() {{
+                put("scheduleId", scheduleId);
+                put("slot", slot);
+                put("num", num);
+            }});
+        }
+        result.put("slots", temp);
+        return result;
+    }
+
     @Transactional
     void insertScheduleHandle(List<DoctorWorkPlanScheduleEntity> list) {
         for (DoctorWorkPlanScheduleEntity entity : list) {

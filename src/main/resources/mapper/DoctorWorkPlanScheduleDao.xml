@@ -38,5 +38,15 @@
           AND p."dept_sub_id" = ${deptSubId}
         ORDER BY d."id", s."slot"
     </select>
+    <select id="searchByWorkPlanId" parameterType="int" resultType="HashMap">
+        SELECT p."doctor_id" AS "doctorId",
+               s."id" AS "scheduleId",
+               s."slot" AS "slot",
+               s."maximum" AS "maximum",
+               s."num" AS "num"
+        FROM HOSPITAL.DOCTOR_WORK_PLAN p
+                 JOIN HOSPITAL.DOCTOR_WORK_PLAN_SCHEDULE s ON s."work_plan_id" = p."id"
+        WHERE p."id" = ${workPlanId}
+    </select>
 
 </mapper>

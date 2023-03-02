@@ -19,6 +19,9 @@ public interface DoctorWorkPlanScheduleDao {
     public ArrayList<HashMap> searchNewSchedule(int workPlanId);
 
      ArrayList<HashMap> searchDeptSubSchedule(Map param);
+
+    ArrayList<HashMap> searchByWorkPlanId(int workPlanId);
+
 }
 
 
