@@ -25,4 +25,18 @@
         WHERE s."work_plan_id" = ${workPlanId}
     </select>
 
+    <select id="searchDeptSubSchedule" parameterType="Map" resultType="HashMap">
+        SELECT p."id"        AS "workPlanId",
+               d."id"        AS "doctorId",
+               d."name"      AS "doctorName",
+               s."slot"      AS "slot",
+               s."maximum"   AS "maximum"
+        FROM HOSPITAL.DOCTOR_WORK_PLAN p
+                 JOIN HOSPITAL.DOCTOR_WORK_PLAN_SCHEDULE s ON s."work_plan_id" = p."id"
+                 JOIN HOSPITAL.DOCTOR d ON p."doctor_id" = d."id"
+        WHERE p."date" = TO_DATE('${date}')
+          AND p."dept_sub_id" = ${deptSubId}
+        ORDER BY d."id", s."slot"
+    </select>
+
 </mapper>

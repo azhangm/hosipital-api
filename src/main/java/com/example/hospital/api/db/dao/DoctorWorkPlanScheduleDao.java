@@ -4,6 +4,7 @@ import com.example.hospital.api.db.pojo.DoctorWorkPlanScheduleEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 医生工作计划安排
@@ -16,6 +17,8 @@ public interface DoctorWorkPlanScheduleDao {
     void insert(DoctorWorkPlanScheduleEntity entity);
 
     public ArrayList<HashMap> searchNewSchedule(int workPlanId);
+
+     ArrayList<HashMap> searchDeptSubSchedule(Map param);
 }
 
 
