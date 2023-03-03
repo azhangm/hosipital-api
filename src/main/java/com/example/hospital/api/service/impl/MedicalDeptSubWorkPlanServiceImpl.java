@@ -8,9 +8,11 @@ import cn.hutool.json.JSONUtil;
 import com.example.hospital.api.db.dao.DoctorWorkPlanDao;
 import com.example.hospital.api.db.pojo.DoctorWorkPlanEntity;
 import com.example.hospital.api.db.pojo.DoctorWorkPlanScheduleEntity;
+import com.example.hospital.api.exception.HospitalException;
 import com.example.hospital.api.service.DoctorWorkPlanScheduleService;
 import com.example.hospital.api.service.MedicalDeptSubWorkPlanService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -195,5 +197,17 @@ public class MedicalDeptSubWorkPlanServiceImpl implements MedicalDeptSubWorkPlan
         }
         doctorWorkPlanScheduleService.insert(list);
         return "添加成功！";
+    }
+
+    @Override
+    @Transactional
+    public void deleteWorkPlan(int workPlanId) {
+        //查询出诊计划挂号人数
+        Integer num = dao.searchNumById(workPlanId);
+        if (num > 0) {
+            throw new HospitalException("该出诊计划已经有患者挂号，禁止删除");
+        }
+        dao.deleteById(workPlanId);
+        doctorWorkPlanScheduleService.deleteByWorkPlanId(workPlanId);
     }
 }

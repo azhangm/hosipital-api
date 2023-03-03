@@ -49,4 +49,28 @@
         WHERE p."id" = ${workPlanId}
     </select>
 
+
+    <select id="searchSumNumByIds" resultType="long">
+        SELECT SUM("num")
+        FROM HOSPITAL.DOCTOR_WORK_PLAN_SCHEDULE
+        WHERE "id" IN
+        <foreach collection="list" open="(" item="one" separator="," close=")">
+            ${one}
+        </foreach>
+    </select>
+
+    <delete id="deleteByIds">
+        DELETE FROM HOSPITAL.DOCTOR_WORK_PLAN_SCHEDULE
+        WHERE "id" IN
+        <foreach collection="list" open="(" item="one" separator="," close=")">
+            ${one}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByWorkPlanId" parameterType="int">
+        DELETE FROM HOSPITAL.DOCTOR_WORK_PLAN_SCHEDULE
+        WHERE "work_plan_id" = ${workPlanId}
+    </delete>
+
+
 </mapper>

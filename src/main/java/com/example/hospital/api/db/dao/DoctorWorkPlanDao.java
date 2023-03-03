@@ -25,6 +25,12 @@ public interface DoctorWorkPlanDao {
 
      @Transactional
      void insert(DoctorWorkPlanEntity entity);
+
+      void updateMaximum(Map param);
+
+     Integer searchNumById(int id);
+
+     void deleteById(int id);
 }
 
 

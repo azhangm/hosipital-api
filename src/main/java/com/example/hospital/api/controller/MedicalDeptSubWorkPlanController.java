@@ -10,6 +10,7 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONArray;
 import com.example.hospital.api.common.R;
+import com.example.hospital.api.controller.form.DeleteWorkPlanForm;
 import com.example.hospital.api.controller.form.InsertWorkPlanForm;
 import com.example.hospital.api.controller.form.SearchWorkPlanInRangeForm;
 import com.example.hospital.api.service.MedicalDeptSubWorkPlanService;
@@ -67,4 +68,13 @@ public class MedicalDeptSubWorkPlanController {
         String result = workPlanService.insert(param);
         return R.ok().put("result", result);
     }
+
+    @PostMapping("/deleteWorkPlan")
+    @SaCheckLogin
+    @SaCheckPermission(value = {"ROOT", "SCHEDULE:DELETE"}, mode = SaMode.OR)
+    public R deleteWorkPlan(@RequestBody @Valid DeleteWorkPlanForm form) {
+        workPlanService.deleteWorkPlan(form.getWorkPlanId());
+        return R.ok();
+    }
+
 }

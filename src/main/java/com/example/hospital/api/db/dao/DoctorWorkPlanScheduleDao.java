@@ -12,6 +12,7 @@ import java.util.Map;
  * @author zm
  * @date 2023/02/06
  */
+@SuppressWarnings("all")
 public interface DoctorWorkPlanScheduleDao {
 
     void insert(DoctorWorkPlanScheduleEntity entity);
@@ -21,6 +22,12 @@ public interface DoctorWorkPlanScheduleDao {
      ArrayList<HashMap> searchDeptSubSchedule(Map param);
 
     ArrayList<HashMap> searchByWorkPlanId(int workPlanId);
+
+     long searchSumNumByIds(ArrayList<Integer> ids);
+
+     void deleteByIds(ArrayList<Integer> ids);
+
+    void deleteByWorkPlanId(int workPlanId);
 
 }
 

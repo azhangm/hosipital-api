@@ -13,4 +13,8 @@ public interface DoctorWorkPlanScheduleService {
     HashMap searchByWorkPlanId(int workPlanId);
 
     ArrayList searchDeptSubSchedule(Map param);
+
+     void updateSchedule(Map param);
+
+    void deleteByWorkPlanId(int workPlanId);
 }

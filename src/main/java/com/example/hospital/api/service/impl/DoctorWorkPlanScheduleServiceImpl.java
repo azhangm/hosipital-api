@@ -3,9 +3,11 @@ package com.example.hospital.api.service.impl;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.map.BiMap;
 import cn.hutool.core.map.MapUtil;
+import com.example.hospital.api.controller.form.vo.DoctorScheduleSlotVO;
 import com.example.hospital.api.db.dao.DoctorWorkPlanDao;
 import com.example.hospital.api.db.dao.DoctorWorkPlanScheduleDao;
 import com.example.hospital.api.db.pojo.DoctorWorkPlanScheduleEntity;
+import com.example.hospital.api.exception.HospitalException;
 import com.example.hospital.api.service.DoctorWorkPlanScheduleService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -159,5 +161,83 @@ public class DoctorWorkPlanScheduleServiceImpl implements DoctorWorkPlanSchedule
             map.replace("slot", tempSlot);
         }
         return result;
+    }
+
+    @Override
+    public void updateSchedule(Map param) {
+        //删除或者添加新的出诊时段
+        ArrayList<DoctorWorkPlanScheduleEntity> addList = this.insertOrDeleteScheduleHandle(param);
+        //把新添加的出诊时段缓存到Redis
+        this.addScheduleCache(addList);
+    }
+
+    @Transactional
+    ArrayList<DoctorWorkPlanScheduleEntity> insertOrDeleteScheduleHandle(Map param) {
+        //更新计划表接诊人数上限
+        doctorWorkPlanDao.updateMaximum(param);
+
+        Integer workPlanId = MapUtil.getInt(param, "workPlanId");
+        Integer maximum = MapUtil.getInt(param, "maximum");
+
+        //待处理的时间段列表（添加或者删除）
+        ArrayList<DoctorScheduleSlotVO> slots = (ArrayList<DoctorScheduleSlotVO>) param.get("slots");
+        //用于存放添加时间段的列表
+        ArrayList<DoctorWorkPlanScheduleEntity> addList = new ArrayList();
+        //用于存放删除时间段的列表
+        ArrayList<Integer> removeList = new ArrayList();
+
+        //分析哪些是添加时间段，哪些是删除时间段
+        slots.forEach(one -> {
+            //判断添加记录
+            if (one.getOperate().equals("insert")) {
+                DoctorWorkPlanScheduleEntity entity = new DoctorWorkPlanScheduleEntity();
+                entity.setWorkPlanId(workPlanId);
+                entity.setMaximum(maximum);
+                entity.setSlot(one.getSlot());
+                addList.add(entity); //时间段保存到添加列表
+            } else {
+                removeList.add(one.getScheduleId()); //时间段保存到删除列表
+            }
+        });
+
+        //判断删除列表是否有元素
+        if (removeList.size() > 0) {
+            //查询这些待删除时间段的总挂号人数
+            long sum = doctorWorkPlanScheduleDao.searchSumNumByIds(removeList);
+            //如果这些待删除的时间段总挂号人数大于0，说明这些时间段中有的存在患者挂号，所以不能删除直接抛异常
+            if (sum > 0) {
+                throw new HospitalException("修改失败，本次修改与已经挂号记录冲突");
+            }
+
+            //如果没有患者挂号，就删除这些时间段记录
+            doctorWorkPlanScheduleDao.deleteByIds(removeList);
+
+            //删除Redis上面的时间段缓存
+            removeList.forEach(one -> {
+                String key = "doctor_schedule_" + one;
+                redisTemplate.delete(key);
+            });
+        }
+
+        //处理添加时间段列表
+        addList.forEach(one -> {
+            //添加时间段记录
+            doctorWorkPlanScheduleDao.insert(one);
+        });
+
+        return addList;
+    }
+
+    @Override
+    @Transactional
+    public void deleteByWorkPlanId(int workPlanId) {
+        //查询出诊日程记录的ID值
+        ArrayList<HashMap> list = doctorWorkPlanScheduleDao.searchByWorkPlanId(workPlanId);
+        doctorWorkPlanScheduleDao.deleteByWorkPlanId(workPlanId);
+        list.forEach(one -> {
+            int scheduleId = MapUtil.getInt(one, "scheduleId");
+            String key = "doctor_schedule_" + scheduleId;
+            redisTemplate.delete(key);
+        });
     }
 }

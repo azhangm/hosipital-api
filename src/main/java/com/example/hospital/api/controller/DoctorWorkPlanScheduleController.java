@@ -7,6 +7,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.example.hospital.api.common.R;
 import com.example.hospital.api.controller.form.SearchDeptSubScheduleForm;
 import com.example.hospital.api.controller.form.SearchScheduleByWorkPlanIdForm;
+import com.example.hospital.api.controller.form.UpdateDoctorScheduleForm;
 import com.example.hospital.api.service.DoctorWorkPlanScheduleService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,5 +43,14 @@ public class DoctorWorkPlanScheduleController {
         HashMap map = doctorWorkPlanScheduleService.searchByWorkPlanId(form.getWorkPlanId());
         return R.ok().put("result", map);
     }
+
+    @PostMapping("/updateSchedule")
+    @SaCheckLogin
+    @SaCheckPermission(value = {"ROOT", "SCHEDULE:UPDATE"}, mode = SaMode.OR)
+    public R updateSchedule(@RequestBody @Valid UpdateDoctorScheduleForm form) {
+        Map param = BeanUtil.beanToMap(form);
+        doctorWorkPlanScheduleService.updateSchedule(param);
+        return R.ok();
     }
+}
 
